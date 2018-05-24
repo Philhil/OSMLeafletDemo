@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Flips Demo Map</title>
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
+  <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+  <div id="mapid"></div>
+
+  <div class="modal fade modal-geo" tabindex="-1" role="dialog" aria-labelledby="Geo Koordinaten">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="input-group">
+							<span class="input-group-addon">Breitengrad: </span>
+							<input id="modal_latitude" type="text" class="form-control" readonly>
+						</div>
+						<div class="input-group">
+							<span class="input-group-addon">L&auml;ngengrad:</span>
+							<input id="modal_longitude" type="text" class="form-control" readonly>
+						</div>
+						<div class="input-group">
+							<span class="input-group-addon">Lat,Long: </span>
+							<input id="modal_latlong" type="text" class="form-control" readonly>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+
+
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="leaflet/leaflet.js"></script>
+<script type="text/javascript" src="js/flipmap.js"></script>
+<script>
+var map;
+var ajaxRequest;
+var plotlist;
+var plotlayers=[];
+
+function initmap() {
+  // set up the map
+  map = new L.Map('mapid');
+
+  // create the tile layer with correct attribution
+  var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  var osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+  var osm = new L.TileLayer(osmUrl, {minZoom: 7, maxZoom: 19, attribution: osmAttrib});
+
+  // start the map in Winnenden City
+  map.setView(new L.LatLng(48.87736832594066,9.397578947246075),16);
+  map.addLayer(osm);
+
+  addCoordGrabber(map);
+}
+
+$( document ).ready(function() {
+  initmap();
+
+  /*--------add Demo Items to the Map--------*/
+  //Marker
+  var marker = L.marker([48.87736832594066,9.397578947246075]).addTo(map);
+  var marker2 = L.marker([48.87958344004411,9.392184019088747]).addTo(map);
+
+  var pointmarker = new L.LatLng(48.87736832594066,9.397578947246075);
+  var pointmarker2 = new L.LatLng(48.87958344004411,9.392184019088747);
+  var pointList = [pointmarker, pointmarker2];
+
+  var polyline = new L.Polyline(pointList, {
+      color: 'red',
+      weight: 3,
+      opacity: 0.5,
+      smoothFactor: 1
+  });
+  polyline.addTo(map);
+
+  var latlngs = [
+      [48.87585080811848,9.39459800720215],
+      [48.87512400617956,9.39535975456238],
+      [48.87575907641719,9.3963360786438]
+  ];
+  var polyline2 = L.polyline(latlngs, {color: 'red'});
+  polyline2.addTo(map);
+
+  //Marker with own icon
+  var greenIcon = L.icon({
+      iconUrl: 'images/leaf-red.png',
+      shadowUrl: 'images/leaf-shadow.png',
+
+      iconSize:     [38, 95], // size of the icon
+      shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+      shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+  });
+  L.marker([48.87781594300986,9.385467767715456], {icon: greenIcon}).addTo(map);
+
+  //Circle
+  var circle = L.circle([48.87736832594066,9.3975789472], {
+      color: 'red',
+      fillColor: '#900',
+      fillOpacity: 0.5,
+      radius: 100
+  }).addTo(map);
+
+  //polygon
+  var polygon = L.polygon([
+    [48.87812287811371,9.382281303405763],
+    [48.87772774291901,9.389759302139284],
+    [48.87681045275498,9.388042688369753],
+    [48.87552621826618,9.382281303405763]
+  ]).addTo(map);
+
+  //Add a popup on Items
+  marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+  circle.bindPopup("I am a circle.");
+  polygon.bindPopup("I am a polygon.");
+
+});
+</script>
+
+</html>
